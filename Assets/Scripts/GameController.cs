@@ -1,5 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿//using System.Collections;
+//using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -50,22 +50,22 @@ public class GameController : MonoBehaviour
          || (buttonList[2].text == playerSide && buttonList[4].text == playerSide && buttonList[6].text == playerSide)
            )
         {
-            GameOver();
+            GameOver(playerSide);
         }
 
         if(moveCount >= 9)
         {
-            SetGameOverText("no one wins");
+            GameOver("no one");
         }
 
         ChangeSides();
-      
     }
 
-    void GameOver()
+    void GameOver(string winningPlayer)
     {
         SetBoardInteractable(false);//тушим всю доску
-        SetGameOverText(playerSide + " wins");
+        SetGameOverText(winningPlayer + " wins");
+
     }
 
     void ChangeSides()
