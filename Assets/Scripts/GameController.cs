@@ -1,7 +1,21 @@
-﻿//using System.Collections;
-//using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+
+[System.Serializable]
+public class Player
+{
+    public Image panel;
+    public Text text;
+}
+
+[System.Serializable]
+public class PlayerColor
+{
+    public Color panelColor;
+    public Color textColor;
+}
 
 public class GameController : MonoBehaviour
 {
@@ -14,12 +28,19 @@ public class GameController : MonoBehaviour
     private int moveCount;//число ходов общее
 
     public GameObject restartButton;
+
+    public Player playerX;
+    public Player playerO;
+    public PlayerColor activePlayerColor;
+    public PlayerColor inactivePlayerColor;
+
     private void Awake()//загрузка экземпляра сценария
     {
         gameOverPanel.SetActive(false);//отключим меню в начале игры
         SetGameControllerReferenceOnButtons();
+        moveCount = 0;// сброс счетчика ходов
         playerSide = "X"; //первым ходит Х
-        moveCount = 0;
+        SetPlayerColors(playerX, playerO);//подсветим Х
     }
 
     void SetGameControllerReferenceOnButtons()
@@ -57,8 +78,16 @@ public class GameController : MonoBehaviour
         {
             GameOver("no one");
         }
-
         ChangeSides();
+    }
+
+    void SetPlayerColors(Player newPlayer, Player oldPlayer)
+    {
+        newPlayer.panel.color = activePlayerColor.panelColor;//подсветим текущего игорька
+        newPlayer.text.color = activePlayerColor.textColor;
+        oldPlayer.panel.color = inactivePlayerColor.panelColor;//затемним старого игорька
+        oldPlayer.text.color = inactivePlayerColor.textColor;
+
     }
 
     void GameOver(string winningPlayer)
@@ -71,6 +100,14 @@ public class GameController : MonoBehaviour
     void ChangeSides()
     {
         playerSide = (playerSide == "X") ? "O" : "X";
+        if (playerSide=="X")
+        {
+            SetPlayerColors(playerX, playerO);//подсветим Х
+        }
+        else
+        {
+            SetPlayerColors(playerO, playerX);// подсветим второго игрока, О
+        }
     }
 
     void SetGameOverText(string value)//какой текст передадим, тот и напишет в меню
@@ -83,6 +120,7 @@ public class GameController : MonoBehaviour
     {
         gameOverPanel.SetActive(false);//отключим меню в начале игры
         playerSide = "X"; //первым ходит Х
+        SetPlayerColors(playerX, playerO);//подсветим Х
         moveCount = 0;
         SetBoardInteractable(true);
         for (int i = 0; i < buttonList.Length; i++)
