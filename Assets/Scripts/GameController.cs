@@ -8,8 +8,12 @@ public class GameController : MonoBehaviour
     public Text[] buttonList;
     private string playerSide;
 
+    public GameObject gameOverPanel;
+    public Text gameOverText;
+
     private void Awake()//загрузка экземпляра сценария
     {
+        gameOverPanel.SetActive(false);//отключим меню в начале игры
         SetGameControllerReferenceOnButtons();
         playerSide = "X"; //первым ходит Х
     }
@@ -51,6 +55,8 @@ public class GameController : MonoBehaviour
         for(int i = 0; i < buttonList.Length; i++)
         {
             buttonList[i].GetComponentInParent<Button>().interactable = false;//отключаем возможность юзать все кнопки
+            gameOverPanel.SetActive(true);//вызываем меню игры
+            gameOverText.text = playerSide + " wins";
         }
         
     }
