@@ -22,19 +22,15 @@ public class GameController : MonoBehaviour
 {
     public Text[] buttonList;
     private string playerSide;
-
     public GameObject gameOverPanel;
     public Text gameOverText;
-
     private int moveCount;//число ходов общее
-
     public GameObject restartButton;
-
     public Player playerX;
     public Player playerO;
     public PlayerColor activePlayerColor;
     public PlayerColor inactivePlayerColor;
-
+    public GameObject StartInfo;
     //private string playerSide;
     //private string computerSide;
     //public bool playerMove;
@@ -73,10 +69,8 @@ public class GameController : MonoBehaviour
     {
         SetBoardInteractable(true);//включить кнопки полей
         SetPlayerButtons(false);//отключить кнопки выбора стороны
-        //if (startingSide != null)
-        //{
-        //    Awake();
-        //}
+        StartInfo.SetActive(false);//отключили подсказку
+        
     }
 
     public string GetPlayerSide()
@@ -150,6 +144,7 @@ public class GameController : MonoBehaviour
         SetPlayerButtons(true);//подсветить кнопки выбора стороны
         gameOverPanel.SetActive(false);//отключим меню в начале игры
         SetPlayerColorsInactive();
+        StartInfo.SetActive(true);//включили подсказку
         moveCount = 0;
         for (int i = 0; i < buttonList.Length; i++)
         {
