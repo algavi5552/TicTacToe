@@ -21,25 +21,49 @@ public class PlayerColor
 public class GameController : MonoBehaviour
 {
     public Text[] buttonList;
-    private string playerSide;
-    public GameObject gameOverPanel;
     public Text gameOverText;
-    private int moveCount;//число ходов общее
+
+    public GameObject gameOverPanel;
     public GameObject restartButton;
+    public GameObject StartInfo;
+
     public Player playerX;
     public Player playerO;
     public PlayerColor activePlayerColor;
     public PlayerColor inactivePlayerColor;
-    public GameObject StartInfo;
-    //private string playerSide;
-    //private string computerSide;
-    //public bool playerMove;
+    
+    private int moveCount;//число ходов общее
+    private int computerChoice;
+    private string playerSide;
+    private string computerSide;
+
+    public bool playerMove;
+    public float delay;//задержка перед ходом компа
 
     private void Awake()//загрузка экземпляра сценария
     {
         SetGameControllerReferenceOnButtons();
         gameOverPanel.SetActive(false);//отключим меню в начале игры
         moveCount = 0;// сброс счетчика ходов
+        playerMove = true;//первый ход за человеком
+    }
+
+    private void Update()
+    {
+        if (playerMove == false)
+        {
+            delay +=delay * Time.deltaTime;
+            if (delay >= 100)
+            {
+                computerChoice = Random.Range(0, buttonList.Length);
+                if(buttonList[computerChoice].GetComponentInParent<Button>().interactable==true)//если поле свободно
+                {
+                    buttonList[computerChoice].text = GetComputerSide();//комп ставит свою Х или О
+                    buttonList[computerChoice].GetComponentInParent<Button>().interactable = false;//отметить поле занятым
+                    EndTurn();
+                }
+            }
+        }
     }
 
     void SetGameControllerReferenceOnButtons()
@@ -56,10 +80,12 @@ public class GameController : MonoBehaviour
         if (playerSide == "X")
         {
             SetPlayerColors(playerX, playerO);//подсветим Х
+            computerSide = "O";
         }
         else
         {
             SetPlayerColors(playerO, playerX);//подсветим O
+            computerSide = "X";
         }
 
         StartGame();
@@ -78,6 +104,11 @@ public class GameController : MonoBehaviour
         return playerSide;
     }
 
+    public string GetComputerSide()
+    {
+        return computerSide;
+    }
+
     public void EndTurn()//конец хода, проверка на победу
         //простите за жуткий код, у автора видеоуроков он еще хуже, а времени осталось 1 сутки до сдачи=)
     {
@@ -92,12 +123,31 @@ public class GameController : MonoBehaviour
          || (buttonList[2].text == playerSide && buttonList[5].text == playerSide && buttonList[8].text == playerSide)
          || (buttonList[0].text == playerSide && buttonList[4].text == playerSide && buttonList[8].text == playerSide)
          || (buttonList[2].text == playerSide && buttonList[4].text == playerSide && buttonList[6].text == playerSide)
+
            )
         {
             GameOver(playerSide);
         }
 
-        if(moveCount >= 9)
+        if ( 
+            (buttonList[0].text == computerSide && buttonList[1].text == computerSide && buttonList[2].text == computerSide)
+         || (buttonList[3].text == computerSide && buttonList[4].text == computerSide && buttonList[5].text == computerSide)
+         || (buttonList[6].text == computerSide && buttonList[7].text == computerSide && buttonList[8].text == computerSide)
+         || (buttonList[0].text == computerSide && buttonList[3].text == computerSide && buttonList[6].text == computerSide)
+         || (buttonList[1].text == computerSide && buttonList[4].text == computerSide && buttonList[7].text == computerSide)
+         || (buttonList[2].text == computerSide && buttonList[5].text == computerSide && buttonList[8].text == computerSide)
+         || (buttonList[0].text == computerSide && buttonList[4].text == computerSide && buttonList[8].text == computerSide)
+         || (buttonList[2].text == computerSide && buttonList[4].text == computerSide && buttonList[6].text == computerSide)
+         )
+            {
+            GameOver(computerSide);
+            }
+
+
+
+
+
+        if (moveCount >= 9)
         {
             GameOver("no one");
         }
@@ -122,8 +172,10 @@ public class GameController : MonoBehaviour
 
     void ChangeSides()
     {
-        playerSide = (playerSide == "X") ? "O" : "X";
-        if (playerSide=="X")
+        //playerSide = (playerSide == "X") ? "O" : "X";
+        playerMove = (playerMove == true) ? false : true;//чередуем ход 
+       // if (playerSide=="X")
+        if (playerMove ==true)
         {
             SetPlayerColors(playerX, playerO);//подсветим Х
         }
@@ -146,6 +198,8 @@ public class GameController : MonoBehaviour
         SetPlayerColorsInactive();
         StartInfo.SetActive(true);//включили подсказку
         moveCount = 0;
+        playerMove = true;
+        delay = 10;
         for (int i = 0; i < buttonList.Length; i++)
         {
             buttonList[i].text = "";//стираем все Х и О

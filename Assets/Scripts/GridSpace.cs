@@ -12,10 +12,14 @@ public class GridSpace : MonoBehaviour
 
     public void SetSpace()
     {
-        buttonText.text = gameController.GetPlayerSide();
-        //ставим в клетку х или 0, в зависимости от СторонаИгрока
-        button.interactable = false;//отключаем возможность юзать эту кнопку
-        gameController.EndTurn();//завершаем ход
+        if (gameController.playerMove == true)//комп поставит сам, а это для игрока
+        {
+            buttonText.text = gameController.GetPlayerSide();
+            //ставим в клетку х или 0, в зависимости от СторонаИгрока
+            button.interactable = false;//отключаем возможность юзать эту кнопку
+            gameController.EndTurn();//завершаем ход
+        }
+        
     }
 
     public void SetGameControllerReference( GameController controller)

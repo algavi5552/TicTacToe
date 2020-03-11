@@ -1040,9 +1040,10 @@ MonoBehaviour:
   - {fileID: 713204763}
   - {fileID: 997193230}
   - {fileID: 1548596993}
-  gameOverPanel: {fileID: 1072107299}
   gameOverText: {fileID: 23587396}
+  gameOverPanel: {fileID: 1072107299}
   restartButton: {fileID: 1815444986}
+  StartInfo: {fileID: 1849727039}
   playerX:
     panel: {fileID: 1038054648}
     text: {fileID: 1372051684}
@@ -1057,7 +1058,8 @@ MonoBehaviour:
   inactivePlayerColor:
     panelColor: {r: 0, g: 0, b: 0, a: 0}
     textColor: {r: 0, g: 0, b: 0, a: 0}
-  StartInfo: {fileID: 1849727039}
+  playerMove: 0
+  delay: 10
 --- !u!4 &894879184
 Transform:
   m_ObjectHideFlags: 0
