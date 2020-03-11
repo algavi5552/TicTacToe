@@ -12,6 +12,8 @@ public class GameController : MonoBehaviour
     public Text gameOverText;
 
     private int moveCount;//число ходов общее
+
+    public GameObject restartButton;
     private void Awake()//загрузка экземпляра сценария
     {
         gameOverPanel.SetActive(false);//отключим меню в начале игры
@@ -62,12 +64,8 @@ public class GameController : MonoBehaviour
 
     void GameOver()
     {
-        for(int i = 0; i < buttonList.Length; i++)
-        {
-            buttonList[i].GetComponentInParent<Button>().interactable = false;//отключаем возможность юзать все кнопки
-            SetGameOverText(playerSide + " wins");
-        }
-        
+        SetBoardInteractable(false);//тушим всю доску
+        SetGameOverText(playerSide + " wins");
     }
 
     void ChangeSides()
@@ -79,5 +77,26 @@ public class GameController : MonoBehaviour
     {
         gameOverPanel.SetActive(true);//вызываем меню игры
         gameOverText.text = value;
+    }
+
+    public void RestartGame()
+    {
+        gameOverPanel.SetActive(false);//отключим меню в начале игры
+        playerSide = "X"; //первым ходит Х
+        moveCount = 0;
+        SetBoardInteractable(true);
+        for (int i = 0; i < buttonList.Length; i++)
+        {
+            buttonList[i].text = "";//стираем все Х и О
+        }
+
+    }
+    void SetBoardInteractable(bool toggle)//тумблер, выставляет доску готовой к кликам
+    {
+        for (int i = 0; i < buttonList.Length; i++)
+        {
+            buttonList[i].GetComponentInParent<Button>().interactable = toggle;// возможность юзать все кнопки
+            
+        }
     }
 }
