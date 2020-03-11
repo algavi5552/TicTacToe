@@ -8,6 +8,7 @@ public class Player
 {
     public Image panel;
     public Text text;
+    public Button button;
 }
 
 [System.Serializable]
@@ -34,13 +35,15 @@ public class GameController : MonoBehaviour
     public PlayerColor activePlayerColor;
     public PlayerColor inactivePlayerColor;
 
+    //private string playerSide;
+    //private string computerSide;
+    //public bool playerMove;
+
     private void Awake()//загрузка экземпляра сценария
     {
-        gameOverPanel.SetActive(false);//отключим меню в начале игры
         SetGameControllerReferenceOnButtons();
+        gameOverPanel.SetActive(false);//отключим меню в начале игры
         moveCount = 0;// сброс счетчика ходов
-        playerSide = "X"; //первым ходит Х
-        SetPlayerColors(playerX, playerO);//подсветим Х
     }
 
     void SetGameControllerReferenceOnButtons()
@@ -50,6 +53,32 @@ public class GameController : MonoBehaviour
             buttonList[i].GetComponentInParent<GridSpace>().SetGameControllerReference(this);//читаем их значение
         }
     }
+
+    public void SetStartingSide(string startingSide)
+    {
+        playerSide = startingSide;
+        if (playerSide == "X")
+        {
+            SetPlayerColors(playerX, playerO);//подсветим Х
+        }
+        else
+        {
+            SetPlayerColors(playerO, playerX);//подсветим O
+        }
+
+        StartGame();
+    }
+
+    void StartGame()
+    {
+        SetBoardInteractable(true);//включить кнопки полей
+        SetPlayerButtons(false);//отключить кнопки выбора стороны
+        //if (startingSide != null)
+        //{
+        //    Awake();
+        //}
+    }
+
     public string GetPlayerSide()
     {
         return playerSide;
@@ -94,7 +123,7 @@ public class GameController : MonoBehaviour
     {
         SetBoardInteractable(false);//тушим всю доску
         SetGameOverText(winningPlayer + " wins");
-
+        SetPlayerColorsInactive();
     }
 
     void ChangeSides()
@@ -118,11 +147,10 @@ public class GameController : MonoBehaviour
 
     public void RestartGame()
     {
+        SetPlayerButtons(true);//подсветить кнопки выбора стороны
         gameOverPanel.SetActive(false);//отключим меню в начале игры
-        playerSide = "X"; //первым ходит Х
-        SetPlayerColors(playerX, playerO);//подсветим Х
+        SetPlayerColorsInactive();
         moveCount = 0;
-        SetBoardInteractable(true);
         for (int i = 0; i < buttonList.Length; i++)
         {
             buttonList[i].text = "";//стираем все Х и О
@@ -137,4 +165,20 @@ public class GameController : MonoBehaviour
             
         }
     }
+
+    void SetPlayerButtons(bool toggle)//выбираем сторону с помощью кнопки
+    {
+        playerX.button.interactable = toggle;
+        playerO.button.interactable = toggle;
+    }
+
+    void SetPlayerColorsInactive()
+    {
+        playerX.panel.color = inactivePlayerColor.panelColor;//подсветим текущего игорька
+        playerX.text.color = inactivePlayerColor.textColor;
+        playerO.panel.color = inactivePlayerColor.panelColor;//затемним старого игорька
+        playerO.text.color = inactivePlayerColor.textColor;
+
+    }
+
 }
